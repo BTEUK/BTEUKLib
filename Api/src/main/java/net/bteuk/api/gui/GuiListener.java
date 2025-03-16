@@ -5,7 +5,10 @@ import net.bteuk.services.api.GuiCloseEvent;
 
 import java.util.UUID;
 
-public final class GuiListener {
+/**
+ * Listener that implements the necessary methods to allow the player to interact with a {@link Gui}.
+ */
+public abstract class GuiListener {
 
     /**
      * Action to perform when a Player clicks in a gui.
