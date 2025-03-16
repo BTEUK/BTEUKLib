@@ -15,7 +15,7 @@ public abstract class GuiListener {
      *
      * @param guiClickEvent the click event
      */
-    public void onClick(GuiClickEvent guiClickEvent) {
+    protected final void onClick(GuiClickEvent guiClickEvent) {
 
         UUID inventoryUUID = Gui.openInventories.get(guiClickEvent.getPlayer().getUuid());
 
@@ -40,7 +40,7 @@ public abstract class GuiListener {
      *
      * @param guiCloseEvent the close event
      */
-    public void onClose(GuiCloseEvent guiCloseEvent) {
+    protected final void onClose(GuiCloseEvent guiCloseEvent) {
 
         // Get the uuid of the open inventory, if exists.
         UUID inventoryUUID = Gui.openInventories.get(guiCloseEvent.getPlayer().getUuid());
