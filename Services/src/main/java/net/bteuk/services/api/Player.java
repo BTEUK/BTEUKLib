@@ -30,6 +30,4 @@ public interface Player {
     boolean hasPermission(String permissionNode);
 
     void openInventory(Inventory inventory);
-
-    UUID getUniqueId();
 }

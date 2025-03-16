@@ -1,5 +1,7 @@
 package net.bteuk.api.gui;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.bteuk.api.BTEUKAPI;
 import net.bteuk.services.api.Inventory;
 import net.bteuk.services.api.ItemStack;
@@ -17,8 +19,12 @@ public abstract class Gui {
     //Information about the gui.
     private final UUID uuid;
     private final Inventory inv;
+    
+    @Getter
     private final Map<Integer, GuiAction> actions;
 
+    @Getter
+    @Setter
     private boolean deleteOnClose = false;
 
     public Gui(Inventory inv) {
@@ -60,12 +66,12 @@ public abstract class Gui {
 
     public void open(Player player) {
         player.openInventory(inv);
-        openInventories.put(player.getUniqueId(), this.uuid);
+        openInventories.put(player.getUuid(), this.uuid);
     }
 
     public void delete() {
         for (Player p : BTEUKAPI.getOnlinePlayers()) {
-            openInventories.remove(p.getUniqueId(), this.uuid);
+            openInventories.remove(p.getUuid(), this.uuid);
         }
         inventoriesByUUID.remove(this.uuid);
     }
