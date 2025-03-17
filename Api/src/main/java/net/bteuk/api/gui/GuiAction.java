@@ -1,6 +1,6 @@
 package net.bteuk.api.gui;
 
-import net.bteuk.services.api.GuiClickEvent;
+import net.bteuk.api.GuiClickEvent;
 
 @FunctionalInterface
 public interface GuiAction {

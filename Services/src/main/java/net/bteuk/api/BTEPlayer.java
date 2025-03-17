@@ -1,8 +1,8 @@
-package net.bteuk.services.api;
+package net.bteuk.api;
 
 import java.util.UUID;
 
-public interface Player {
+public interface BTEPlayer {
 
     /**
      * Get the Name of the player.
@@ -17,10 +17,10 @@ public interface Player {
     UUID getUuid();
 
     /**
-     * Get the {@link Server} the player is connected to.
+     * Get the {@link BTEServer} the player is connected to.
      * @return the server
      */
-    Server getServer();
+    BTEServer getServer();
 
     /**
      * Check if the player has a specific permission node.
@@ -29,5 +29,5 @@ public interface Player {
      */
     boolean hasPermission(String permissionNode);
 
-    void openInventory(Inventory inventory);
+    void openInventory(BTEInventory<?> BTEInventory);
 }

@@ -1,8 +1,8 @@
-package net.bteuk.services.api;
+package net.bteuk.api;
 
 public interface GuiClickEvent {
 
-    Player getPlayer();
+    BTEPlayer getPlayer();
 
     int getSlot();
 

@@ -1,4 +1,4 @@
-package net.bteuk.services.api;
+package net.bteuk.api;
 
 public interface World {
 

@@ -1,7 +1,7 @@
 package net.bteuk.api.gui;
 
-import net.bteuk.services.api.GuiClickEvent;
-import net.bteuk.services.api.GuiCloseEvent;
+import net.bteuk.api.GuiClickEvent;
+import net.bteuk.api.GuiCloseEvent;
 
 import java.util.UUID;
 

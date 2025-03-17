@@ -1,11 +1,12 @@
 package net.bteuk.api.gui;
 
 import lombok.Getter;
+
 import lombok.Setter;
-import net.bteuk.api.BTEUKAPI;
-import net.bteuk.services.api.Inventory;
-import net.bteuk.services.api.ItemStack;
-import net.bteuk.services.api.Player;
+import net.bteuk.api.BTEInventory;
+import net.bteuk.api.BTEItemStack;
+import net.bteuk.api.BTEPlayer;
+import net.bteuk.provider.BTEPlayerProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +19,9 @@ public abstract class Gui {
 
     //Information about the gui.
     private final UUID uuid;
-    private final Inventory inv;
+    private final BTEInventory<?> inv;
+
+    private final BTEPlayerProvider playerProvider;
     
     @Getter
     private final Map<Integer, GuiAction> actions;
@@ -27,18 +30,19 @@ public abstract class Gui {
     @Setter
     private boolean deleteOnClose = false;
 
-    public Gui(Inventory inv) {
+    public Gui(BTEInventory<?> inv, BTEPlayerProvider playerProvider) {
         this.inv = inv;
+        this.playerProvider = playerProvider;
         uuid = UUID.randomUUID();
         actions = new HashMap<>();
         inventoriesByUUID.put(this.uuid, this);
     }
 
-    public Inventory getInventory() {
+    public BTEInventory<?> getInventory() {
         return inv;
     }
 
-    public void setItem(int slot, ItemStack stack, GuiAction action) {
+    public void setItem(int slot, BTEItemStack<?> stack, GuiAction action) {
 
         inv.setItem(slot, stack);
         if (action != null) {
@@ -47,7 +51,7 @@ public abstract class Gui {
 
     }
 
-    public void setItem(int slot, ItemStack stack) {
+    public void setItem(int slot, BTEItemStack<?> stack) {
         setItem(slot, stack, null);
     }
 
@@ -64,13 +68,13 @@ public abstract class Gui {
         actions.clear();
     }
 
-    public void open(Player player) {
-        player.openInventory(inv);
-        openInventories.put(player.getUuid(), this.uuid);
+    public void open(BTEPlayer BTEPlayer) {
+        BTEPlayer.openInventory(inv);
+        openInventories.put(BTEPlayer.getUuid(), this.uuid);
     }
 
     public void delete() {
-        for (Player p : BTEUKAPI.getOnlinePlayers()) {
+        for (BTEPlayer p : playerProvider.getPlayers()) {
             openInventories.remove(p.getUuid(), this.uuid);
         }
         inventoriesByUUID.remove(this.uuid);

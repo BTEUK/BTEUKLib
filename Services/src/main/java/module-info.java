@@ -1,7 +1,11 @@
-module net.bteuk.services {
-    exports net.bteuk.services.api;
-    exports net.bteuk.services.serviceloader;
-    exports net.bteuk.services.entity;
+import net.bteuk.provider.BTEPlayerProvider;
 
-    uses net.bteuk.services.api.PlayerProvider;
+module net.bteuk.services {
+    exports net.bteuk.api;
+    exports net.bteuk.serviceloader;
+    exports net.bteuk.entity;
+    exports net.bteuk.provider;
+    exports net.bteuk.exception;
+
+    uses BTEPlayerProvider;
 }
