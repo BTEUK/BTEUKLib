@@ -1,4 +1,4 @@
-package net.bteuk.api.component;
+package net.bteuk.component;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
