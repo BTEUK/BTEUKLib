@@ -47,7 +47,7 @@ public final class GuiListener implements Listener {
             if (inventoryUUID != null) {
                 e.setCancelled(true);
                 Gui gui = GuiManager.getGuiByUuid(inventoryUUID);
-                GuiAction action = gui.getActions().get(e.getRawSlot());
+                GuiAction action = gui.getAction(e.getRawSlot());
 
                 if (action != null) {
                     action.click(e);
@@ -58,23 +58,16 @@ public final class GuiListener implements Listener {
 
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
+        if (e.getPlayer() instanceof Player player) {
+            // Get the uuid of the open inventory, if exists.
+            UUID guiUuid = GuiManager.getOpenGuiUuidByPlayer(player);
 
-        Player player = (Player) e.getPlayer();
-
-        // Get the uuid of the open inventory, if exists.
-        UUID guiUuid = GuiManager.getOpenGuiUuidByPlayer(player);
-
-        if (guiUuid != null) {
-
-            // Get the gui.
-            Gui gui = GuiManager.getGuiByUuid(guiUuid);
-
-            // If the gui should delete on close, delete it.
-            if (gui != null && gui.isDeleteOnClose()) {
-                gui.delete();
-            } else {
-                //Remove the player from the list of open inventories.
-                GuiManager.closeGui(player);
+            if (guiUuid != null) {
+                // Get the gui.
+                Gui gui = GuiManager.getGuiByUuid(guiUuid);
+                if (gui != null) {
+                    gui.close(player);
+                }
             }
         }
     }
