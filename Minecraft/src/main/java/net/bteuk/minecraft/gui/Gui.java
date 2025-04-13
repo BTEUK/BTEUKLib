@@ -1,4 +1,4 @@
-package net.bteuk.gui;
+package net.bteuk.minecraft.gui;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,7 +36,7 @@ public abstract class Gui {
         actions = new HashMap<>();
     }
 
-    public void setItem(int slot, ItemStack stack, GuiAction action) {
+    public void setItem(int slot, ItemStack stack, net.bteuk.minecraft.gui.GuiAction action) {
         inventory.setItem(slot, stack);
         setAction(slot, action);
     }
@@ -45,11 +45,11 @@ public abstract class Gui {
         setItem(slot, stack, null);
     }
 
-    public GuiAction getAction(int slot) {
+    public net.bteuk.minecraft.gui.GuiAction getAction(int slot) {
         return actions.get(slot);
     }
 
-    public void setAction(int slot, GuiAction action) {
+    public void setAction(int slot, net.bteuk.minecraft.gui.GuiAction action) {
         if (action != null) {
             actions.put(slot, action);
         }
@@ -75,11 +75,11 @@ public abstract class Gui {
             delete();
         } else {
             //Remove the player from the list of open inventories.
-            GuiManager.closeGui(player);
+            net.bteuk.minecraft.gui.GuiManager.closeGui(player);
         }
     }
 
     public void delete() {
-        GuiManager.unregisterGuiByUuid(this.uuid);
+        net.bteuk.minecraft.gui.GuiManager.unregisterGuiByUuid(this.uuid);
     }
 }

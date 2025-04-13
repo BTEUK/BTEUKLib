@@ -1,4 +1,4 @@
-package net.bteuk.gui;
+package net.bteuk.minecraft.gui;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
