@@ -64,6 +64,10 @@ public class BTUKHttpClient {
         this.authentication = new BearerTokenAuthentication(new TokenManager(this.baseUrl, tokenPath, credentials, httpClient, objectMapper));
     }
 
+    public void close() {
+        httpClient.close();
+    }
+
     public <T> CompletableFuture<T> get(String path, Class<T> responseType) {
         return sendRequest("GET", path, null, responseType);
     }
@@ -156,13 +160,5 @@ public class BTUKHttpClient {
         } catch (Exception e) {
             return CompletableFuture.failedFuture(e);
         }
-    }
-
-    public HttpClient getInternalClient() {
-        return httpClient;
-    }
-
-    public ObjectMapper getInternalObjectMapper() {
-        return objectMapper;
     }
 }

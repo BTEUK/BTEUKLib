@@ -317,9 +317,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TeamRegion'
+                $ref: '#/components/schemas/ListTeamRegionsResponse'
         '204':
           description: Team has no regions
         '404':
@@ -347,9 +345,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Server'
+                $ref: '#/components/schemas/ListServersResponse'
         '204':
           description: Team has no servers
         '404':
@@ -371,9 +367,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Team'
+                $ref: '#/components/schemas/ListTeamsResponse'
         '204':
           description: There are no teams
 
@@ -572,9 +566,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ServerRegion'
+                $ref: '#/components/schemas/ListServerRegionsResponse'
         '204':
           description: Server has no regions
         '404':
@@ -602,9 +594,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Region'
+                $ref: '#/components/schemas/ListRegionsResponse'
   /region/summary/{id}:
     get:
       tags:
@@ -694,43 +684,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    regionId:
-                      type: integer
-                      format: int32
-                    approval_reasons:
-                      type: object
-                      properties:
-                        CLAIM_AREA:
-                          type: boolean
-                        TOTAL_CLAIMED_AREA:
-                          type: boolean
-                        INACTIVE_OVERLAP:
-                          type: boolean
-                        SECTION_SAVE_OVERLAP:
-                          type: boolean
-                      required:
-                        - CLAIM_AREA
-                        - TOTAL_CLAIMED_AREA
-                        - INACTIVE_OVERLAP
-                        - SECTION_SAVE_OVERLAP
-                    area:
-                      type: number
-                      format: double
-                    created_at:
-                      type: string
-                      format: date-time
-                    region_owner:
-                      type: string
-                  required:
-                    - regionId
-                    - approval_reasons
-                    - area
-                    - created_at
-                    - region_owner
+                $ref: '#/components/schemas/ListReviewerApprovalsResponse'
         '500':
           description: Internal service error.
           content:
@@ -755,22 +709,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    regionId:
-                      type: integer
-                      format: int32
-                    saveId:
-                      type: integer
-                      format: int32
-                    region_owner:
-                      type: string
-                  required:
-                    - regionId
-                    - saveId
-                    - region_owner
+                $ref: '#/components/schemas/ListPlayerApprovalsResponse'
         '500':
           description: Internal service error.
           content:
@@ -862,9 +801,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/InactiveRegion'
+                $ref: '#/components/schemas/ListInactiveRegionsResponse'
         '500':
           description: Internal service error.
           content:
@@ -1450,9 +1387,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MembershipRequest'
+                $ref: '#/components/schemas/ListMembershipRequestsResponse'
   /membership/invite/received:
     get:
       tags:
@@ -1473,9 +1408,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MembershipRequest'
+                $ref: '#/components/schemas/ListMembershipRequestsResponse'
   /membership/request/sent:
     get:
       tags:
@@ -1496,9 +1429,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MembershipRequest'
+                $ref: '#/components/schemas/ListMembershipRequestsResponse'
   /membership/request/received:
     get:
       tags:
@@ -1519,9 +1450,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MembershipRequest'
+                $ref: '#/components/schemas/ListMembershipRequestsResponse'
   /membership/transferownership:
     post:
       tags:
@@ -1711,9 +1640,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                    $ref: '#/components/schemas/UserSubmission'
+                $ref: '#/components/schemas/ListUserSubmissionsResponse'
   /submission/retract:
     patch:
       tags:
@@ -1889,9 +1816,14 @@ components:
         - status
         - allowedCidrs
     ListClientsResponse:
-      type: array
-      items:
-        $ref: '#/components/schemas/Client'
+      type: object
+      properties:
+        clients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Client'
+      required:
+        - clients
     Client:
       type: object
       properties:
@@ -1909,6 +1841,12 @@ components:
     RegionClaimRequest:
       type: object
       properties:
+        uuid:
+          type: string
+          format: uuid
+        teamId:
+          type: integer
+          format: int32
         user:
           $ref: '#/components/schemas/TeamUser'
         geometry_bounds:
@@ -1969,7 +1907,7 @@ components:
           items:
             $ref: '#/components/schemas/Approval'
       required:
-        - result_type
+        - type
 
     Coordinate:
       type: object
@@ -2109,6 +2047,134 @@ components:
         - id
         - name
         - geometry_bounds
+    ListTeamRegionsResponse:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamRegion'
+      required:
+        - regions
+    ListTeamsResponse:
+      type: object
+      properties:
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+      required:
+        - teams
+    ListRegionsResponse:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Region'
+      required:
+        - regions
+    ListServerRegionsResponse:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServerRegion'
+      required:
+        - regions
+    ListReviewerApprovalsResponse:
+      type: object
+      properties:
+        approvals:
+          type: array
+          items:
+            type: object
+            properties:
+              regionId:
+                type: integer
+                format: int32
+              approval_reasons:
+                type: object
+                properties:
+                  CLAIM_AREA:
+                    type: boolean
+                  TOTAL_CLAIMED_AREA:
+                    type: boolean
+                  INACTIVE_OVERLAP:
+                    type: boolean
+                  SECTION_SAVE_OVERLAP:
+                    type: boolean
+                required:
+                  - CLAIM_AREA
+                  - TOTAL_CLAIMED_AREA
+                  - INACTIVE_OVERLAP
+                  - SECTION_SAVE_OVERLAP
+              area:
+                type: number
+                format: double
+              created_at:
+                type: string
+                format: date-time
+              region_owner:
+                type: string
+            required:
+              - regionId
+              - approval_reasons
+              - area
+              - created_at
+              - region_owner
+      required:
+        - approvals
+    ListPlayerApprovalsResponse:
+      type: object
+      properties:
+        approvals:
+          type: array
+          items:
+            type: object
+            properties:
+              regionId:
+                type: integer
+                format: int32
+              saveId:
+                type: integer
+                format: int32
+              region_owner:
+                type: string
+            required:
+              - regionId
+              - saveId
+              - region_owner
+      required:
+        - approvals
+    ListInactiveRegionsResponse:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/InactiveRegion'
+      required:
+        - regions
+    ListMembershipRequestsResponse:
+      type: object
+      properties:
+        requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/MembershipRequest'
+      required:
+        - requests
+    ListUserSubmissionsResponse:
+      type: object
+      properties:
+        submissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSubmission'
+      required:
+        - submissions
     Server:
       type: object
       properties:
@@ -2120,6 +2186,15 @@ components:
       required:
         - id
         - name
+    ListServersResponse:
+      type: object
+      properties:
+        servers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Server'
+      required:
+        - servers
     ServerRegion:
       type: object
       properties:
