@@ -9,6 +9,9 @@ import org.bukkit.entity.Player;
 import org.btuk.outlines.geometry.Outline;
 import org.btuk.outlines.geometry.IntPoint2d;
 
+import java.util.Collection;
+import java.util.Collections;
+
 public final class DrawParticles {
 
     private static final int PARTICLE_DRAW_RADIUS = 100;
@@ -22,36 +25,42 @@ public final class DrawParticles {
     private static final Particle.DustOptions PARTICLE_OPTIONS = new Particle.DustOptions(Color.RED, 1.0f);
 
     public static void drawOutline(Player player, Outline outline) {
-        var points = outline.points();
-        int pointCount = points.size();
+        drawOutlines(player, Collections.singletonList(outline));
+    }
 
-        if (pointCount == 0) {
-            return;
-        }
-
+    public static void drawOutlines(Player player, Collection<Outline> outlines) {
         World world = player.getWorld();
         Location location = player.getLocation();
         double playerX = location.getX();
         double playerZ = location.getZ();
 
-        IntPoint2d point = outline.points().getFirst();
+        for (Outline outline : outlines) {
+            var points = outline.points();
+            int pointCount = points.size();
 
-        if (pointCount == 1) {
-            drawPoint(player, world, playerX, playerZ, point.x(), point.z());
-            return;
+            if (pointCount == 0) {
+                continue;
+            }
+
+            IntPoint2d point = points.getFirst();
+
+            if (pointCount == 1) {
+                drawPoint(player, world, playerX, playerZ, point.x(), point.z());
+                continue;
+            }
+
+            if (pointCount == 2) {
+                drawLine(player, world, playerX, playerZ, point, points.get(1), true);
+                continue;
+            }
+
+            for (int i = 1; i < points.size(); i++) {
+                drawLine(player, world, playerX, playerZ, point, points.get(i), false);
+                point = points.get(i);
+            }
+
+            drawLine(player, world, playerX, playerZ, point, points.getFirst(), false);
         }
-
-        if (outline.points().size() == 2) {
-            drawLine(player, world, playerX, playerZ, point, points.get(1), true);
-            return;
-        }
-
-        for (int i = 1; i < outline.points().size(); i++) {
-            drawLine(player, world, playerX, playerZ, point, points.get(i), false);
-            point = outline.points().get(i);
-        }
-
-        drawLine(player, world, playerX, playerZ, point, points.getFirst(), false);
     }
 
     public static void drawLine(Player player, World world, double playerX, double playerZ, IntPoint2d start, IntPoint2d end, boolean includeEnd) {

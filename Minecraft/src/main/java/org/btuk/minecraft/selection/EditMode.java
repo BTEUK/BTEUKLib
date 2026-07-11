@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import org.btuk.minecraft.misc.ComponentUtils;
 import org.btuk.minecraft.misc.ItemUtils;
@@ -29,12 +30,16 @@ public class EditMode implements Listener {
 
     private final Player editingPlayer;
 
-    public EditMode(int index, EditableSelection selection, Player editingPlayer) {
+    private final JavaPlugin plugin;
+
+    public EditMode(int index, EditableSelection selection, Player editingPlayer, JavaPlugin plugin) {
         this.index = index;
         this.editableSelection = selection;
         this.editingPlayer = editingPlayer;
+        this.plugin = plugin;
 
         editingPlayer.getInventory().setItemInMainHand(SELECTION_EDIT_ITEM);
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public void cancel() {
@@ -51,11 +56,11 @@ public class EditMode implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onEntityPlace(EntityPlaceEvent event) {
-        if (event.getEntity() instanceof Player player && player.equals(this.editingPlayer)
-            && player.getInventory().getItemInMainHand().equals(SELECTION_EDIT_ITEM)) {
+        if (event.getPlayer() != null && event.getPlayer().equals(this.editingPlayer)
+            && event.getPlayer().getInventory().getItemInMainHand().equals(SELECTION_EDIT_ITEM)) {
 
             event.setCancelled(true);
-            editableSelection.movePoint(index, event.getBlock().getLocation(), player);
+            editableSelection.movePoint(index, event.getBlock().getLocation(), event.getPlayer());
             cancel();
         }
     }

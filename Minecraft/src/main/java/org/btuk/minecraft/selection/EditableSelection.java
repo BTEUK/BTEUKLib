@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,8 +52,20 @@ public class EditableSelection extends Selection {
             return;
         }
 
-        selection.set(index, new IntPoint2d(x, z));
+        IntPoint2d point = new IntPoint2d(x, z);
+        if (!pointValidator.test(player, point)) {
+            return;
+        }
+
+        selection.set(index, point);
         replaceOutline(playerId, selection);
+        selectionUpdateHook.accept(player, selection);
+    }
+
+    @Override
+    public void startSelection(Player player, List<IntPoint2d> points) {
+        super.startSelection(player, points);
+        replaceHolograms(player);
     }
 
     @Override
@@ -100,9 +113,13 @@ public class EditableSelection extends Selection {
             return;
         }
         World world = player.getWorld();
-        for (IntPoint2d point : points) {
+        for (int i = 0; i < points.size(); i++) {
+            IntPoint2d point = points.get(i);
             Location location = new Location(world, point.x() + 0.5, 2 + world.getHighestBlockYAt(point.x(), point.z()), point.z() + 0.5);
-            holograms.add(hologramManager.createHologram(location, player));
+            String text = i == 0 ? "&a&lFirst Corner" : "&b&lClick to move corner";
+            UUID hologramId = hologramManager.createHologram(location, Collections.singletonList(text));
+            hologramManager.setPlayerVisibility(hologramId, player, true);
+            holograms.add(hologramId);
         }
         for (int i = 0; i < holograms.size(); i++) {
             UUID hologramId = holograms.get(i);
@@ -110,7 +127,7 @@ public class EditableSelection extends Selection {
             hologramManager.addHologramClickEvent(hologramId, event -> {
                 toggleEditable(player, false);
                 player.getInventory().removeItem(selectionTool);
-                EditMode mode = playerEditMode.put(playerId, new EditMode(cornerIndex, this, player));
+                EditMode mode = playerEditMode.put(playerId, new EditMode(cornerIndex, this, player, plugin));
                 if (mode != null) {
                     mode.cancel();
                 }

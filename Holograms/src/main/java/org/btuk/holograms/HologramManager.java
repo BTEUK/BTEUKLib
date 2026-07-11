@@ -9,8 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -44,12 +44,29 @@ public final class HologramManager {
         holograms.clear();
     }
 
-    public UUID createHologram(Location location, Player player) {
-        UUID uuid = createHologram(location);
-        Hologram hologram = holograms.get(uuid);
-        hologram.setShowPlayer(player);
+    public UUID createHologram(Location location, List<String> lines) {
+        UUID hologramId = UUID.randomUUID();
+        if (DHAPI.getHologram(hologramId.toString()) != null) {
+            throw new IllegalStateException("Hologram with ID " + hologramId + " already exists");
+        }
+
+        Hologram hologram = DHAPI.createHologram(hologramId.toString(), location, lines);
+        hologram.setDefaultVisibleState(false);
+        holograms.put(hologramId, hologram);
         log.info("Created hologram");
-        return uuid;
+        return hologramId;
+    }
+
+    public void setPlayerVisibility(UUID uuid, Player player, boolean visible) {
+        Hologram hologram = holograms.get(uuid);
+        if (hologram == null) {
+            throw new IllegalArgumentException("Hologram with ID " + uuid + " does not exist");
+        }
+        if (visible) {
+            hologram.setShowPlayer(player);
+        } else {
+            hologram.removeShowPlayer(player);
+        }
     }
 
     public void hideHologram(UUID uuid) {
@@ -80,15 +97,4 @@ public final class HologramManager {
         removeHologramClickEvent(uuid);
     }
 
-    private UUID createHologram(Location location) {
-        UUID hologramId = UUID.randomUUID();
-        if (DHAPI.getHologram(hologramId.toString()) != null) {
-            throw new IllegalStateException("Hologram with ID " + hologramId + " already exists");
-        }
-
-        Hologram hologram = DHAPI.createHologram(hologramId.toString(), location, Collections.singletonList("&b&lClick to move corner"));
-        hologram.setDefaultVisibleState(false);
-        holograms.put(hologramId, hologram);
-        return hologramId;
-    }
 }
